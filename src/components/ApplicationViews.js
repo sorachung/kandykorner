@@ -1,6 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { EmployeeForm } from "./employees/EmployeeFrom";
+import { EmployeeForm } from "./employees/EmployeeForm";
 import { EmployeeList } from "./employees/EmployeeList";
 import { LocationsList } from "./locations/LocationsList";
 import { ProductList } from "./products/ProductList";
