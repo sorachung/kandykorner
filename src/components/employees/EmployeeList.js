@@ -19,9 +19,15 @@ export const EmployeeList = () => {
             <div>  
                 <button onClick={() => history.push("/employees/hire")}>Hire Employee</button>   
             </div>            
-            <div>
+            <div className="employees__list">
                 {employees.map(employee => {
-                    return <p key={`employee--${employee.id}`}>{employee.name}</p>
+                    return <div className="employee" key={`employee--${employee.id}`}>
+                        <h2 className="employee__name">{employee.name}</h2>
+                        <div className="employee__location">
+                            <p>{employee.location.addressStreet}</p>
+                            <p>{employee.location.addressCity}, {employee.location.addressState} {employee.location.addressZipCode}</p>
+                        </div>
+                    </div>
                 })}
             </div>
         </>
