@@ -17,8 +17,11 @@ export const EmployeeList = () => {
     const deleteEmployee = (event) => {
         const employeeId = parseInt(event.target.value);
         return fetch(`http://localhost:8088/employees/${employeeId}`, {method: "DELETE"})
-            .then( () => updateEmployees(employees.filter(employee => employee.id !== employeeId))
-            )
+            .then( () => {
+                fetch("http://localhost:8088/employees?_expand=location")
+                .then(response => response.json())
+                .then(employeesData => updateEmployees(employeesData));
+            })
     }
 
     useEffect(() => {
