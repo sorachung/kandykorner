@@ -20,13 +20,9 @@ export const EmployeeList = () => {
             .then( () => {
                 fetch("http://localhost:8088/employees?_expand=location")
                 .then(response => response.json())
-                .then(employeesData => updateEmployees(employeesData));
+                .then(employeesData => updateEmployees(employeesData))
             })
     }
-
-    useEffect(() => {
-        history.push("/employees")
-        }, [employees, history])
     
     return (
         <>
