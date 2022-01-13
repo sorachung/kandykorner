@@ -14,8 +14,8 @@ export const postCustomer = (customer) => {
         .then(res => res.json())
 }
 
-export const getAllCustomers = () => {
-    return fetch("http://localhost:8088/customers")
+export const getAllCustomersWithPurchases = () => {
+    return fetch("http://localhost:8088/customers?_embed=purchases")
                 .then(response => response.json())
 }
 

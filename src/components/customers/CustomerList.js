@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { getAllCustomers } from "../ApiManager";
+import { getAllCustomersWithPurchases } from "../ApiManager";
 
 export const CustomerList = () => {
     const [customers, updateCustomers] = useState([]);
 
     useEffect(
         () => {
-            getAllCustomers()
-                .then( (customersData) => updateCustomers(customersData));
+            getAllCustomersWithPurchases()
+                .then( (customersData) => {
+                    customersData.sort((a,b) => b.purchases.length - a.purchases.length)
+                    updateCustomers(customersData)
+                
+                });
         },
         []
     )
+
+
 
     return (
         <>
@@ -22,6 +27,7 @@ export const CustomerList = () => {
                         <div className="customer__email">
                             <p>{customer.email}</p>
                         </div>
+                        <p>Candies bought: {customer.purchases.length}</p>
                     </div>
                 })}
             </div>  
