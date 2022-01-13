@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { getAllLocations, postEmployee } from "../ApiManager";
 
 export const EmployeeForm = () => {
     const [employee, updateEmployee] = useState({
@@ -13,8 +14,7 @@ export const EmployeeForm = () => {
     const [locations, updateLocations] = useState([])
 
     useEffect(() => {
-        fetch("http://localhost:8088/locations")
-            .then(response => response.json())
+        getAllLocations()
             .then(locations => updateLocations(locations))
         
     }, []);
@@ -32,15 +32,7 @@ export const EmployeeForm = () => {
             locationId: employee.locationId
         }
 
-        const fetchOption = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newEmployee)
-        }
-
-        return fetch("http://localhost:8088/employees", fetchOption)
+        postEmployee(newEmployee)
             .then(() => history.push("/employees"))
     }
 

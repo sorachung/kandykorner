@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
+import { getAllProductsExpandProductType, postProduct, postPurchase } from "../ApiManager";
 
 export const ProductList = () => {
     const [products, updateProducts] = useState([]);
     const [cartItems, updateCart] = useState([]);
 
     const getProducts = () => {
-        return fetch("http://localhost:8088/products?_expand=productType&_sort=productType.category&_order=asc")
-            .then(response => response.json())
+        return getAllProductsExpandProductType()
             .then(products => updateProducts(products))
     }
 
@@ -40,16 +40,7 @@ export const ProductList = () => {
             employeeId: 8
         };
 
-        const fetchOption = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newPurchase)
-        }
-        
-        fetch(`http://localhost:8088/purchases`, fetchOption)
-            .then(res => res.json())
+        postPurchase(newPurchase)
             .then(
                 (purchaseObj) => {
                     const promisesArray = [];
@@ -58,15 +49,8 @@ export const ProductList = () => {
                             productId: item.id,
                             purchaseId: purchaseObj.id
                         }
-                        const fetchOption2 = {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(newPurchaseProduct)
-                        }
-            
-                        promisesArray.push(fetch(`http://localhost:8088/purchasesProducts`, fetchOption2))
+                        
+                        promisesArray.push(postProduct(newPurchaseProduct))
                 })
                 return Promise.all(promisesArray)
         }).then( () => {

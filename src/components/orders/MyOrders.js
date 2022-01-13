@@ -1,49 +1,47 @@
 import React, { useEffect, useState } from "react";
+import { getAllProductsExpandProductType, getPurchasesProductsByCustomer } from "../ApiManager";
 
 export const MyOrders = () => {
     const [products, updateProducts] = useState([]);
-    const [myPurchases, updateMyPurchases] = useState([]);
-    const [purchasesProducts, updatePurchasesProducts] = useState([])
+    const [myPurchasesProducts, updatePurchasesProducts] = useState([])
 
     const getProducts = () => {
-        return fetch("http://localhost:8088/products?_expand=productType&_sort=productType.category&_order=asc")
-            .then(response => response.json())
+        return getAllProductsExpandProductType()
             .then(products => updateProducts(products))
     }
-    
-    const getPurchasesProducts = () => {
-        return fetch("http://localhost:8088/purchasesProducts?_expand=product")
-            .then(response => response.json())
-            .then(data => updatePurchasesProducts(data))
-    }
 
-    const getMyPurchases = () => {
-        return fetch(`http://localhost:8088/purchases?customerId=${localStorage.getItem("kandy_customer")}`)
-            .then(response => response.json())
-            .then(data => updateMyPurchases(data))
+    const getMyPurchasesProducts = () => {
+        return getPurchasesProductsByCustomer()
+        .then(data => {
+            const myPurchasesProducts = [];
+            data.forEach(purchases => {
+                purchases.purchasesProducts.forEach(pp => myPurchasesProducts.push(pp))
+            })
+            updatePurchasesProducts(myPurchasesProducts)
+        
+        })
     }
 
     useEffect(() => {
         getProducts()
-        getMyPurchases()
-        getPurchasesProducts()
+        getMyPurchasesProducts()
     }, []);
 
-    const myProductsPurchases = purchasesProducts.filter(mypp => {
-        return myPurchases.find(purchase => purchase.id === mypp.purchaseId)
+    const myProducts = products.filter(product => {
+        return myPurchasesProducts.find(mypp => product.id === mypp.productId)
     })
 
     return (
         <>
             <h1>My Orders</h1>
             <div className="products">
-                {myProductsPurchases.map(mypp => {
-                    return <div key={`product--${mypp.product.id}`}>
-                        <h3>{mypp.product.brand} {mypp.product.name} - {mypp.product.weight}</h3>
-                        <p>{mypp.product.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</p>
+                {myProducts.map( product => {
+                    return <div key={`product--${product.id}`}>
+                        <h3>{product.brand} {product.name} - {product.weight}</h3>
+                        <p>{product.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</p>
                     </div>
                 })}
-            </div>
+            </div> 
         </>
     )
 }

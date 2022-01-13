@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { getAllCustomers } from "../ApiManager";
 
 export const CustomerList = () => {
     const [customers, updateCustomers] = useState([]);
 
     useEffect(
         () => {
-            fetch("http://localhost:8088/customers")
-                .then(response => response.json())
+            getAllCustomers()
                 .then( (customersData) => updateCustomers(customersData));
         },
         []

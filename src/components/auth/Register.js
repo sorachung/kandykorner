@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { getCustomerByEmail, postCustomer } from "../ApiManager";
 import "./Login.css";
 
 export const Register = () => {
@@ -9,8 +10,7 @@ export const Register = () => {
     const history = useHistory();
 
     const existingUserCheck = () => {
-        return fetch(`http://localhost:8088/customers?email=${customer.email}`)
-            .then(res => res.json())
+        return getCustomerByEmail(customer.email)
             .then(user => !!user.length)
     }
 
@@ -19,14 +19,7 @@ export const Register = () => {
         existingUserCheck()
             .then(userExists => {
                 if (!userExists) {
-                    fetch("http://localhost:8088/customers", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(customer)
-                    })
-                        .then(res => res.json())
+                    postCustomer(customer)
                         .then(createdUser => {
                             if(createdUser.hasOwnProperty("id")) {
                                 localStorage.setItem("kandy_customer", createdUser.id)
