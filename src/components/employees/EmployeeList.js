@@ -5,11 +5,15 @@ export const EmployeeList = () => {
     const [employees, updateEmployees] = useState([]);
     const history = useHistory();
 
+    const getEmployees = () => {
+        return fetch("http://localhost:8088/employees?_expand=location")
+            .then(response => response.json())
+            .then(employeesData => updateEmployees(employeesData));
+    }
+
     useEffect(
         () => {
-            fetch("http://localhost:8088/employees?_expand=location")
-                .then(response => response.json())
-                .then(employeesData => updateEmployees(employeesData));
+            getEmployees()
         },
         []
     )
@@ -18,9 +22,7 @@ export const EmployeeList = () => {
         const employeeId = parseInt(event.target.value);
         return fetch(`http://localhost:8088/employees/${employeeId}`, {method: "DELETE"})
             .then( () => {
-                fetch("http://localhost:8088/employees?_expand=location")
-                .then(response => response.json())
-                .then(employeesData => updateEmployees(employeesData))
+                getEmployees()
             })
     }
     
