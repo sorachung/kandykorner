@@ -1,23 +1,41 @@
 import React, { useEffect, useState } from "react"
 import { getAllProductsExpandProductType, postProduct, postPurchase } from "../ApiManager";
+import { useHistory } from "react-router-dom";
 
-export const ProductList = () => {
-    const [products, updateProducts] = useState([]);
+export const InventoryList = (props) => {
+    const [searchedInventory, updateSearchedInventory] = useState([])
+    const [inventory, updateInventory] = useState([]);
     const [cartItems, updateCart] = useState([]);
 
-    const getProducts = () => {
+    const getInventory = () => {
         return getAllProductsExpandProductType()
-            .then(products => updateProducts(products))
+            .then(products => {
+                updateInventory(products)
+                updateSearchedInventory(products)
+            })
     }
 
+    useEffect( () => {
+        getInventory()
+    },[])
+
     useEffect(() => {
-        getProducts();
-    }, []);
+        const processedSearchText = props.searchText.toLowerCase().trim();
+        const filteredInventory = inventory.filter(product => {
+            if(processedSearchText === "") {
+                return true;
+            }
+            return (product.name.toLowerCase().includes(processedSearchText) || product.brand.toLowerCase().includes(processedSearchText))
+        })
+        updateSearchedInventory(filteredInventory)
+    },[props.searchText])
+    
+    const history = useHistory();
 
     const addToCart = (event) => {
         const productId = parseInt(event.target.value);
         
-        const newItemToAdd = products.find(product => productId === product.id)
+        const newItemToAdd = inventory.find(product => productId === product.id)
         const copyOfCartItems = cartItems.map(item => ({...item}))
         copyOfCartItems.push(newItemToAdd)
         // console.log(copyOfCartItems.)
@@ -55,13 +73,16 @@ export const ProductList = () => {
                 return Promise.all(promisesArray)
         }).then( () => {
             updateCart([])
+            history.push("/myorders")
         })
     }
+
+        
 
     return (
         <>
             <div className="products">
-                {products.map(product => {
+                {searchedInventory.map(product => {
                     return <div key={`product--${product.id}`}>
                             <h3>{product.brand} {product.name} - {product.weight}</h3>
                             <p>{product.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</p>

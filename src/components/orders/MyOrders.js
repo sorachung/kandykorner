@@ -6,7 +6,6 @@ export const MyOrders = () => {
     const [myProducts, updatemyProducts] = useState([]);
     const [myPurchasesProducts, updatePurchasesProducts] = useState([])
 
-
     const getProducts = () => {
         return getAllProductsExpandProductType()
             .then(data => updateProducts(data))

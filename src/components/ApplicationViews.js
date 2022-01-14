@@ -3,15 +3,15 @@ import { Route } from "react-router-dom";
 import { CustomerList } from "./customers/CustomerList";
 import { EmployeeForm } from "./employees/EmployeeForm";
 import { EmployeeList } from "./employees/EmployeeList";
+import { Inventory } from "./inventory/Inventory";
 import { LocationsList } from "./locations/LocationsList";
 import { MyOrders } from "./orders/MyOrders";
-import { ProductList } from "./products/ProductList";
 
 export const ApplicationViews = () => {
     return (
         <>
-            <Route path="/products">
-                <ProductList />
+            <Route path="/inventory">
+                <Inventory /> 
             </Route>
             <Route path="/locations">
                 <LocationsList /> 
